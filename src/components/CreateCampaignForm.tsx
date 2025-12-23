@@ -17,6 +17,29 @@ export const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
   const [description, setDescription] = useState("");
   const [budget, setBudget] = useState(0);
 
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateAIDescription = async () => {
+    if (!title) {
+      alert("Please enter a title first!");
+      return;
+    }
+
+    setIsGenerating(true);
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const aiIdea = `A creative campaign strategy for ${title} focused on high-impact digital storytelling.`;
+
+      setDescription(aiIdea);
+    } catch (error) {
+      console.error("AI Error:", error);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -50,9 +73,21 @@ export const CreateCampaignForm: React.FC<CreateCampaignFormProps> = ({
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-400 text-sm font-bold mb-2">
-          Descriptions
-        </label>
+        <div className="flex justify-between items-center mb-2">
+          <label className="block text-gray-400 text-sm font-bold mb-2">
+            Descriptions
+          </label>
+
+          <button
+            type="button"
+            onClick={generateAIDescription}
+            disabled={isGenerating}
+            className="text-xs bg-purple-600 hover:bg-purple-500 text-white px-2 py-1 rounded disabled:bg-gray-600 transition-colors"
+          >
+            {isGenerating ? "Thinking..." : "✨ Magic Generate"}
+          </button>
+        </div>
+
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
