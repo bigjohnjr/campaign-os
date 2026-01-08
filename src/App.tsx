@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { CampaignCard, type Campaign } from "./components/CampaignCard";
-import { CreateCampaignForm } from "./components/CreateCampaignForm";
+import { CampaignCard, type Campaign } from "./features/campaigns/CampaignCard";
+import { CreateCampaignForm } from "./features/campaigns/CreateCampaignForm";
+import { BudgetOverview } from "./features/campaigns/BudgetOverview";
 
 function App() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -13,6 +14,7 @@ function App() {
     const newCampaign: Campaign = {
       id: Date.now().toString(),
       title: input.title,
+      budget: input.budget,
       description: input.description,
       status: "draft",
     };
@@ -20,12 +22,17 @@ function App() {
     setCampaigns([...campaigns, newCampaign]);
   };
 
+  const totalBudget = campaigns.reduce((acc, current) => current.budget + acc, 0);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-4xl font-extrabold text-blue-500 mb-8">
           CampaignOS
         </h1>
+
+        <BudgetOverview totalBudget={totalBudget} totalCount={campaigns.length} />
+
         <CreateCampaignForm onAdd={handleAddCampaign} />
 
         <div className="space-y-4">
